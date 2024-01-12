@@ -13,7 +13,7 @@ namespace Assignment1 {
 			try {
 				server = new TcpListener(localAddr, port);
 				server.Start();
-				Console.WriteLine("Server started");
+				Console.WriteLine("Server started on {0}", port);
 			}
 			catch (Exception e) {
 				Console.WriteLine("Failed to create server: " + e.Message);
@@ -25,8 +25,11 @@ namespace Assignment1 {
 					TcpClient client = server.AcceptTcpClient();
 					Console.WriteLine("Client connected.");
 
-					// Create a new instance of UploadServerThread
-					UploadServerThread serverThread = new UploadServerThread();
+					// Extract the socket from the TcpClient
+					Socket clientSocket = client.Client;
+
+					// Create a new instance of UploadServerThread with the socket
+					UploadServerThread serverThread = new UploadServerThread(clientSocket);
 
 					// Start the thread
 					Thread clientThread = new Thread(serverThread.Run);
@@ -38,8 +41,6 @@ namespace Assignment1 {
 					break;
 				}
 			}
-
-			// Optionally, you may want to gracefully stop the server outside the loop.
 		}
 	}
 }
