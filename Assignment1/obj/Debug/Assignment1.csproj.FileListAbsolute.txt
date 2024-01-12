@@ -1,0 +1,6 @@
+/Users/teihyung/RiderProjects/Assignment1/Assignment1/bin/Debug/Assignment1.exe
+/Users/teihyung/RiderProjects/Assignment1/Assignment1/bin/Debug/Assignment1.pdb
+/Users/teihyung/RiderProjects/Assignment1/Assignment1/obj/Debug/Assignment1.csproj.AssemblyReference.cache
+/Users/teihyung/RiderProjects/Assignment1/Assignment1/obj/Debug/Assignment1.csproj.CoreCompileInputs.cache
+/Users/teihyung/RiderProjects/Assignment1/Assignment1/obj/Debug/Assignment1.exe
+/Users/teihyung/RiderProjects/Assignment1/Assignment1/obj/Debug/Assignment1.pdb
