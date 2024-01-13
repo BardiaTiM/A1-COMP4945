@@ -18,15 +18,14 @@ public class UploadServerThread {
 				string requestLine = reader.ReadLine();
 				Console.WriteLine(requestLine);
 
-				if (requestLine.StartsWith("GET ")) {
+				if (requestLine.StartsWith("GET / HTTP/1.1")) {
 					Console.WriteLine("GET");
 					UploadServlet uploadServlet = new UploadServlet();
 					uploadServlet.doGet(networkStream);
-				} else if (requestLine.StartsWith("POST ")) {
+				} else if (requestLine.StartsWith("POST")) {
 					Console.WriteLine("POST");
-					string response = HandlePostRequest();
-					byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-					networkStream.Write(responseBytes, 0, responseBytes.Length);
+					UploadServlet uploadServlet = new UploadServlet();
+					uploadServlet.doPost(networkStream);
 				}
 
 				socket.Close();
