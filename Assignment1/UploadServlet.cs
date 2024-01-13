@@ -43,8 +43,6 @@ namespace Assignment1 {
 					}
 					else if (part.Contains("name=\"file\";")) {
 						filename = ExtractFilename(part);
-						int dataStart = part.IndexOf("\r\n\r\n") + 4;
-						// fileData = Encoding.UTF8.GetBytes(part.Substring(dataStart));
 						fileData = ExtractFileData(part, inputData, partStartIndex);
 					}
 				}
