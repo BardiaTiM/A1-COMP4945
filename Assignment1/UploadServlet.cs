@@ -6,6 +6,20 @@ using System.IO;
 
 namespace Assignment1 {
 	public class UploadServlet {
+		private string GetSortedFileListing(string directoryPath) {
+			DirectoryInfo di = new DirectoryInfo(directoryPath);
+			FileInfo[] files = di.GetFiles();
+			Array.Sort(files, (f1, f2) => String.Compare(f1.Name, f2.Name, StringComparison.Ordinal));
+
+			StringBuilder fileList = new StringBuilder();
+			fileList.Append("<ul>"); // Start of the unordered list
+			foreach (FileInfo file in files) {
+				fileList.AppendFormat("<li>{0}</li>", file.Name); // Each file name enclosed in <li> tags
+			}
+			fileList.Append("</ul>"); // End of the unordered list
+			return fileList.ToString();
+		}
+		
 		public void doPost(NetworkStream networkStream) {
 			try {
 				MemoryStream memoryStream = new MemoryStream();
@@ -52,12 +66,29 @@ namespace Assignment1 {
 					filename = formFields["caption"] + "_" + formFields["date"] + "_" + filename;
 					Console.WriteLine(filename);
 
-					// Write to the specified folder
-					string directoryPath = "/Users/teihyung/RiderProjects/Assignment1/Assignment1/image";
+					// Write to the specified folder(later change it with your own directory)
+					string directoryPath = "C:\\Users\\chris\\RiderProjects\\A1-COMP4945\\Assignment1\\image";
 					string filePath = directoryPath + Path.DirectorySeparatorChar + filename;
 
 					// Write the file data to the specified file
 					File.WriteAllBytes(filePath, fileData);
+					
+					try {
+						string sortedFileList = GetSortedFileListing(directoryPath);
+
+						string responseBody = "<h1>List of sorted files</h1>" + sortedFileList;
+						string httpResponse = "HTTP/1.1 200 OK\r\n" +
+						                      "Content-Type: text/html; charset=UTF-8\r\n" + // Changed to text/html since we are including HTML content
+						                      "Content-Length: " + Encoding.UTF8.GetByteCount(responseBody) + "\r\n\r\n" +
+						                      responseBody;
+
+						// Send the response
+						byte[] responseBytes = Encoding.UTF8.GetBytes(httpResponse);
+						networkStream.Write(responseBytes, 0, responseBytes.Length);
+						Console.WriteLine("Sorted file list sent successfully.");
+					} catch (Exception e) {
+						Console.WriteLine("Error sending sorted file list: " + e.Message);
+					}
 				}
 				else {
 					Console.WriteLine("Required form fields not found in form data");
