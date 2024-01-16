@@ -40,7 +40,9 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Program.cs"/>
+        <Compile Include="HttpServlet.cs" />
+        <Compile Include="HttpServletRequest.cs" />
+        <Compile Include="HttpServletResponse.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="UploadServer.cs" />
         <Compile Include="UploadServerThread.cs" />

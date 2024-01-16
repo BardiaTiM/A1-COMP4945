@@ -14,6 +14,10 @@ public class UploadServerThread {
 	public void Run() {
 		try {
 			using (NetworkStream networkStream = new NetworkStream(socket, ownsSocket: true)) {
+				// Creating instances of request and response
+				HttpServletRequest request = new HttpServletRequest(networkStream);
+				HttpServletResponse response = new HttpServletResponse(networkStream);
+
 				StreamReader reader = new StreamReader(networkStream);
 				string requestLine = reader.ReadLine();
 				Console.WriteLine(requestLine);
@@ -21,11 +25,11 @@ public class UploadServerThread {
 				if (requestLine.StartsWith("GET / HTTP/1.1")) {
 					Console.WriteLine("GET");
 					UploadServlet uploadServlet = new UploadServlet();
-					uploadServlet.doGet(networkStream);
+					uploadServlet.doGet(request, response);
 				} else if (requestLine.StartsWith("POST")) {
 					Console.WriteLine("POST");
 					UploadServlet uploadServlet = new UploadServlet();
-					uploadServlet.doPost(networkStream);
+					uploadServlet.doPost(request, response);
 				}
 
 				socket.Close();
@@ -35,15 +39,4 @@ public class UploadServerThread {
 		}
 	}
 
-	// private string HandleGetRequest() {
-	// 	// Implement your logic for handling GET request
-	// 	// This is a placeholder response
-	// 	return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 11\r\n\r\nHello World";
-	// }
-
-	private string HandlePostRequest() {
-		// Implement your logic for handling POST request
-		// This is a placeholder response
-		return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 11\r\n\r\nPost Received";
-	}
 }

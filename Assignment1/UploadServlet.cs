@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 namespace Assignment1 {
-	public class UploadServlet {
+	public class UploadServlet : HttpServlet{
 		private string GetSortedFileListing(string directoryPath) {
 			DirectoryInfo di = new DirectoryInfo(directoryPath);
 			FileInfo[] files = di.GetFiles();
@@ -20,12 +20,16 @@ namespace Assignment1 {
 			return fileList.ToString();
 		}
 		
-		public void doPost(NetworkStream networkStream) {
+		public override void doPost(HttpServletRequest request, HttpServletResponse response) {
 			try {
 				MemoryStream memoryStream = new MemoryStream();
-				byte[] buffer = new byte[999999999]; // Adjust this size based on expected data size
+				byte[] buffer = new byte[1000000]; // Adjust this size based on expected data size
 				int bytesRead;
-				while ((bytesRead = networkStream.Read(buffer, 0, buffer.Length)) > 0) {
+
+				Stream inputStream = request.GetInputStream();
+
+				while ((bytesRead = inputStream.Read(buffer, 0, buffer.Length)) > 0) 
+				{
 					memoryStream.Write(buffer, 0, bytesRead);
 					break; // Breaking after first read; adjust if streaming
 				}
@@ -67,7 +71,7 @@ namespace Assignment1 {
 					Console.WriteLine(filename);
 
 					// Write to the specified folder(later change it with your own directory)
-					string directoryPath = "C:\\Users\\chris\\RiderProjects\\A1-COMP4945\\Assignment1\\image";
+					string directoryPath = "C:\\Users\\bardi\\Desktop\\image";
 					string filePath = directoryPath + Path.DirectorySeparatorChar + filename;
 
 					// Write the file data to the specified file
@@ -84,8 +88,10 @@ namespace Assignment1 {
 
 						// Send the response
 						byte[] responseBytes = Encoding.UTF8.GetBytes(httpResponse);
-						networkStream.Write(responseBytes, 0, responseBytes.Length);
+						Stream outputStream = response.GetOutputStream();
+						outputStream.Write(responseBytes, 0, responseBytes.Length);
 						Console.WriteLine("Sorted file list sent successfully.");
+
 					} catch (Exception e) {
 						Console.WriteLine("Error sending sorted file list: " + e.Message);
 					}
@@ -127,9 +133,8 @@ namespace Assignment1 {
 			Array.Copy(inputData, fileDataStartIndex, fileData, 0, fileDataLength);
 			return fileData;
 		}
-
-
-		public void doGet(NetworkStream networkStream) {
+		
+		public override void doGet(HttpServletRequest request, HttpServletResponse response) {
 			string htmlContent =
 				"<!DOCTYPE html>" +
 				"<html>" +
@@ -150,8 +155,10 @@ namespace Assignment1 {
 			                      htmlContent;
 
 			byte[] responseBytes = Encoding.UTF8.GetBytes(httpResponse);
-			networkStream.Write(responseBytes, 0, responseBytes.Length);
+			Stream outputStream = response.GetOutputStream();
+			outputStream.Write(responseBytes, 0, responseBytes.Length);
 			Console.WriteLine("Form sent successfully.");
+
 		}
 	}
 }
